@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Food Color Calculator</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-sacle=1, maximum-scale=1, user-scalable=no">
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link rel="apple-touch-icon" href="assets/images/food-colors.png">
+    <link rel="icon" type="image/png" href="assets/images/food-colors.png" />
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>
+
+    <style>
+        .navbar-light {
+            background: rgb(178, 171, 206);
+        }
+        .alert-danger {
+            background: orange;
+        }
+    </style>
+    </head>
+    <body>
+        <nav class="navbar navbar-dark bg-primary">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">Food Color Calculator</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                  <ul class="navbar-nav">
+                      <!--
+                      <li class="nav-item dropdown">
+                      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Drills
+                      </a>
+                      <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <li><a class="dropdown-item" href="#">Holster Draw</a></li>
+                        <li><a class="dropdown-item" href="#">Up+1</a></li>
+                        <li><a class="dropdown-item" href="#">Up-Multiple</a></li>
+                        <li><a class="dropdown-item" href="#">Problem Solving</a></li>
+                      </ul>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="#">Settin
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="#">Help</a>
+                    </li>
+                      -->
+                  </ul>
+                </div>
+            </div>
+          </nav>
+        
+        <br />
+        <br />
+    
+    <div class="container-fluid">
+        <div id="app" class="app">
+        <div class="row">
+            <div class="col-xs-2 col-lg-3">
+                <div class="form-group">
+                    <label for="foodType" class="form-label">Type of Food</label>
+                    <select v-model="foodType" id="foodType" class="form-select" style="width:228px;" type="dropdown">
+                        <option value="solid">Solid Food</option>
+                        <option value="liquid">Liquids</option>
+                        <option value="soupSauceSpread">Soups, Sauces, Spreads</option>
+                    </select>
+                </div>
+                <br />
+                <div class="form-group">
+                    <label for="foodCalories" class="form-label">Calories Per Serving</label>
+                    <input v-model.trim="calories" id="foodCalories" class="form-control" type="text" size="25" placeholder="How many?" />
+                    <small v-show="calorieError" class="text-danger">Calories can only contain whole numbers greater than 0 and cannot be empty</small>
+                </div>
+                <br />
+                <div class="form-group">
+                    <label for="foodWeight" class="form-label">Weight (in Grams or mL)</label>
+                    <input v-model.trim="weight" id="foodWeight" class="form-control" type="text" size="30" placeholder="How much?" />
+                    <small v-show="weightError" class="text-danger">Weight can only contain whole numbers greater than 0 and cannot be empty</small>
+                </div>
+                <br />
+                    <button class="btn btn-primary" v-model="color" v-on:click="calculateColor()" name="Calc">Calculate</button>
+                <br />
+                <br />
+            </div> <!-- end col -->
+
+            <div class="col-xs-10 col-lg-9">
+                
+                <p v-if="color">This food is:</p>
+                    <div v-if="color == 'Yellow'" class="alert alert-warning text-center" role="alert">
+                    {{color}}
+                    </div>
+                    <div v-else-if="color == 'Green'" class="alert alert-success text-center" role="alert">
+                        {{color}}
+                    </div>
+                    <div v-else-if="color == 'Orange'" class="alert alert-danger text-center" role="alert">
+                        {{color}}
+                    </div>
+            
+                <p v-if="color == 'Yellow' || color == 'Orange'">Exception: If this food contains whole grains or whole wheat:</p>
+                    <div v-if="color == 'Yellow'" class="alert alert-success text-center" role="alert">
+                        Green
+                    </div>
+                    <div v-else-if="color == 'Orange'" class="alert alert-warning text-center" role="alert">
+                    Yellow
+                    </div>
+
+                <p v-if="color == 'Yellow' || color == 'Orange'">Exception: If this food is non fat dairy:</p>
+                    <div v-if="color == 'Yellow' || color == 'Orange'" class="alert alert-success text-center" role="alert">
+                        Green
+                    </div>
+
+                <p v-if="color == 'Green' || color == 'Orange'">Exception: If this food is low fat dairy:</p>
+                    <div v-if="color == 'Green' || color == 'Orange'" class="alert alert-warning text-center" role="alert">
+                        Yellow
+                    </div>
+            
+                <p v-if="color == 'Green' || color == 'Orange'">Exception: If this food is an artificial sweetener:</p>
+                    <div v-if="color == 'Green' || color == 'Orange'" class="alert alert-warning text-center" role="alert">
+                        Yellow
+                    </div>
+
+                <p v-if="color == 'Green' || color == 'Yellow'">Exception: If this is alcohol:</p>
+                    <div v-if="color == 'Green'" class="alert alert-warning text-center" role="alert">
+                        Yellow
+                    </div>
+                    <div v-else-if="color == 'Yellow'" class="alert alert-danger text-center" role="alert">
+                        Orange
+                    </div>
+            </div><!-- end col -->
+    
+        </div> <!-- end row -->
+        </div><!-- end vue app -->
+    </div> <!-- container -->
+
+    <script src="foodcolor.js"></script>
+    </body>
+
+</html>
